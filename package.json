@@ -31,8 +31,8 @@
     "typeorm": "^0.2.30"
   },
   "scripts": {
-    "lint": "yarn eslint && yarn prettier --check .",
-    "lint:fix": "yarn eslint --fix && yarn prettier --write .",
+    "lint": "yarn eslint . && yarn prettier --check .",
+    "lint:fix": "yarn eslint . --fix && yarn prettier --write .",
     "build": "yarn tsc",
     "build:watch": "yarn tsc --watch"
   }
