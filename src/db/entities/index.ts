@@ -1,4 +1,6 @@
-import { KVEntity } from './KV'
-export * from './KV'
+import { DeviceEntity } from './device'
+export * from './device'
+import { KVEntity } from './kvs'
+export * from './kvs'
 
-export const entities = [KVEntity]
+export const entities = [KVEntity, DeviceEntity]

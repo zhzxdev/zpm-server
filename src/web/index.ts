@@ -1,1 +1,45 @@
-export const a = 1
+import fastify from 'fastify'
+import { Server } from 'socket.io'
+import { EntityManager, getManager } from 'typeorm'
+import { APP_VERSION } from '../misc/constants'
+import { ENV_IS_DEVELOPMENT } from '../misc/env'
+import io from './io'
+import api from './api'
+import { logger } from '../misc/logger'
+
+const PORT = 8012
+
+declare module 'fastify' {
+  interface FastifyInstance {
+    manager: EntityManager
+    io: Server
+  }
+}
+
+export async function startWebService(): Promise<void> {
+  const server = fastify()
+
+  // Swagger
+  if (ENV_IS_DEVELOPMENT) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    await server.register(require('fastify-swagger'), {
+      swagger: {
+        info: {
+          title: 'ZPM Server',
+          description: 'ZHZX Printer Management Server',
+          version: APP_VERSION
+        }
+      },
+      exposeRoute: true
+    })
+  }
+
+  // Inject manager
+  const manager = getManager()
+  server.decorate('manager', manager)
+
+  await server.register(io)
+  await server.register(api, { prefix: '/api' })
+  await server.listen(PORT)
+  logger.info(`HTTP Server listening on port ${PORT}`)
+}
