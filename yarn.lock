@@ -97,6 +97,11 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.6.tgz#f4c7ec43e81b319a9815115031709f26987891f0"
   integrity sha512-3c+yGKvVP5Y9TYBEibGNR+kLtijnj7mYrXRg+WpFb2X9xm04g/DXYkfg4hmzJQosc9snFNUPkbYIhu+KAm6jJw==
 
+"@types/lru-cache@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@types/lru-cache/-/lru-cache-5.1.0.tgz#57f228f2b80c046b4a1bd5cac031f81f207f4f03"
+  integrity sha512-RaE0B+14ToE4l6UqdarKPnXwVDuigfFv+5j9Dze/Nqr23yyuqdNvzcZi3xB+3Agvi5R4EOgAksfv3lXX4vBt9w==
+
 "@types/node@*", "@types/node@^14.14.10", "@types/node@^14.14.22":
   version "14.14.22"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.22.tgz#0d29f382472c4ccf3bd96ff0ce47daf5b7b84b18"
@@ -1061,6 +1066,13 @@ flatted@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.1.0.tgz#a5d06b4a8b01e3a63771daa5cb7a1903e2e57067"
   integrity sha512-tW+UkmtNg/jv9CSofAKvgVcO7c2URjhTdW1ZTkcAritblu8tajiYy7YisnIflEwtKssCtOxpnBRoCB7iap0/TA==
+
+fluent-json-schema@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/fluent-json-schema/-/fluent-json-schema-2.0.3.tgz#2a041b04cdd6db237102673a75a1e4e77609dcb9"
+  integrity sha512-Cd0Htv9mJfPVhrdBWNrKoIR/sYc4E2rlS+i3cooYwJi08uEree7daWNw0ZFw1djG4uajDxSjsiHPxAEgzgOqQQ==
+  dependencies:
+    deepmerge "^4.2.2"
 
 forever-agent@~0.6.1:
   version "0.6.1"

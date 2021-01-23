@@ -1,4 +1,5 @@
 import fastify from 'fastify'
+import fastifySensible from 'fastify-sensible'
 import { Server } from 'socket.io'
 import { EntityManager, getManager } from 'typeorm'
 import { APP_VERSION } from '../misc/constants'
@@ -17,7 +18,9 @@ declare module 'fastify' {
 }
 
 export async function startWebService(): Promise<void> {
-  const server = fastify()
+  const server = fastify({
+    logger
+  })
 
   // Swagger
   if (ENV_IS_DEVELOPMENT) {
@@ -39,6 +42,7 @@ export async function startWebService(): Promise<void> {
   server.decorate('manager', manager)
 
   await server.register(io)
+  await server.register(fastifySensible)
   await server.register(api, { prefix: '/api' })
   await server.listen(PORT)
   logger.info(`HTTP Server listening on port ${PORT}`)

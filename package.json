@@ -9,6 +9,7 @@
   "main": "build/index.js",
   "devDependencies": {
     "@types/fs-extra": "^9.0.6",
+    "@types/lru-cache": "^5.1.0",
     "@types/node": "^14.14.22",
     "@types/pino": "^6.3.5",
     "@types/semver": "^7.3.4",
@@ -27,7 +28,9 @@
     "fastify-plugin": "^3.0.0",
     "fastify-sensible": "^3.1.0",
     "fastify-static": "^3.4.0",
+    "fluent-json-schema": "^2.0.3",
     "fs-extra": "^9.1.0",
+    "lru-cache": "^6.0.0",
     "pino": "^6.11.0",
     "reflect-metadata": "^0.1.13",
     "semver": "^7.3.4",
