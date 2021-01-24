@@ -4,10 +4,13 @@ import { UserEntity } from '../../db'
 import { APP_VERSION } from '../../misc/constants'
 import { randomBytesAsync, verifyPassword } from '../../misc/crypto'
 import device from './device'
+import { noAdditionalProperties } from './no_additional_properties'
 import { tokenStorage } from './token_storage'
 import user from './user'
 
 const fn: FastifyPluginAsync = async (server) => {
+  await server.register(noAdditionalProperties)
+
   server.setErrorHandler(async (error) => {
     if (error.name === 'EntityNotFound') {
       return server.httpErrors.badRequest()
@@ -34,7 +37,7 @@ const fn: FastifyPluginAsync = async (server) => {
       if (!(await verifyPassword(pass, user.hash, user.salt))) throw server.httpErrors.forbidden()
       const accessToken = (await randomBytesAsync(16)).toString('base64')
       tokenStorage.set(accessToken, user.id)
-      return { id: user.id, token: accessToken }
+      return accessToken
     }
   )
 
