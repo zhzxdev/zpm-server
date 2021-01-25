@@ -95,6 +95,7 @@ const fn: FastifyPluginAsync = async (server) => {
       const user = await server.manager.findOneOrFail(UserEntity, id, { relations: ['tokens'] })
       if (user.level >= req.user.level && user.id !== req.user.id) throw server.httpErrors.forbidden
       const token = new UserTokenEntity()
+      token.user = user
       const { name } = <any>req.body
       token.name = name
       token.token = (await randomBytesAsync(64)).toString('hex')

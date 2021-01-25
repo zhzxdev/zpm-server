@@ -15,7 +15,7 @@ const fn: FastifyPluginAsync = async (server) => {
     if (error.name === 'EntityNotFound') {
       return server.httpErrors.badRequest()
     }
-    return server.httpErrors.internalServerError()
+    throw error
   })
 
   server.get('/', async () => {
