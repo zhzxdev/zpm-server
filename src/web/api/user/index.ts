@@ -2,6 +2,8 @@ import { FastifyPluginAsync } from 'fastify'
 import { UserEntity } from '../../../db'
 import { tokenStorage } from '../token_storage'
 import user from './user'
+import device from './device'
+import operations from './operations'
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -25,6 +27,8 @@ const fn: FastifyPluginAsync = async (server) => {
   })
 
   await server.register(user, { prefix: '/user' })
+  await server.register(device, { prefix: '/device' })
+  await server.register(operations, { prefix: '/operations' })
 }
 
 export default fn

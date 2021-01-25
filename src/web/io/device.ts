@@ -51,3 +51,10 @@ const fn: FastifyPluginAsync = async (server) => {
 }
 
 export default fn
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export async function invoke(type: string, device: string, ...args: any): Promise<any> {
+  const conn = currentConns.get(device)
+  if (!conn) throw new Error('Device offline')
+  return conn.rpc.invoke(type, ...args)
+}

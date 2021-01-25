@@ -29,6 +29,7 @@ const fn: FastifyPluginAsync = async (server) => {
     async (req) => {
       const { name, login, level, pass } = <any>req.body
       if (level >= req.user.level) throw server.httpErrors.forbidden()
+
       const user = new UserEntity()
       user.name = name
       user.login = login
@@ -37,6 +38,7 @@ const fn: FastifyPluginAsync = async (server) => {
       user.hash = hash
       user.salt = salt
       await server.manager.save(user)
+
       return user.id
     }
   )
@@ -44,7 +46,8 @@ const fn: FastifyPluginAsync = async (server) => {
   server.get('/:id', async (req) => {
     const { id } = <any>req.params
     const user = await server.manager.findOneOrFail(UserEntity, id, { relations: ['tokens'] })
-    if (user.level >= req.user.level && user.id !== req.user.id) throw server.httpErrors.forbidden
+    if (user.level >= req.user.level && user.id !== req.user.id) throw server.httpErrors.forbidden()
+
     return user
   })
 
@@ -62,7 +65,8 @@ const fn: FastifyPluginAsync = async (server) => {
     async (req) => {
       const { id } = <any>req.params
       const user = await server.manager.findOneOrFail(UserEntity, id, { relations: ['tokens'] })
-      if (user.level >= req.user.level && user.id !== req.user.id) throw server.httpErrors.forbidden
+      if (user.level >= req.user.level && user.id !== req.user.id) throw server.httpErrors.forbidden()
+
       mergeObj(user, <any>req.body, 'name', 'login', 'level')
       const { pass } = <any>req.body
       if (pass) {
@@ -71,16 +75,20 @@ const fn: FastifyPluginAsync = async (server) => {
         user.salt = salt
       }
       await server.manager.save(user)
-      return user.id
+
+      return true
     }
   )
 
   server.delete('/:id', async (req) => {
     const { id } = <any>req.params
     const user = await server.manager.findOneOrFail(UserEntity, id, { relations: ['tokens'] })
-    if (user.level >= req.user.level && user.id !== req.user.id) throw server.httpErrors.forbidden
+
+    if (user.level >= req.user.level && user.id !== req.user.id) throw server.httpErrors.forbidden()
+    if (user.level === 127) throw server.httpErrors.badRequest()
+
     await server.manager.remove(user)
-    return user.id
+    return true
   })
 
   server.post(
@@ -93,13 +101,15 @@ const fn: FastifyPluginAsync = async (server) => {
     async (req) => {
       const { id } = <any>req.params
       const user = await server.manager.findOneOrFail(UserEntity, id, { relations: ['tokens'] })
-      if (user.level >= req.user.level && user.id !== req.user.id) throw server.httpErrors.forbidden
+      if (user.level >= req.user.level && user.id !== req.user.id) throw server.httpErrors.forbidden()
+
       const token = new UserTokenEntity()
       token.user = user
       const { name } = <any>req.body
       token.name = name
       token.token = (await randomBytesAsync(64)).toString('hex')
       await server.manager.save(token)
+
       return [token.id, token.token]
     }
   )
@@ -109,9 +119,11 @@ const fn: FastifyPluginAsync = async (server) => {
     const token = await server.manager.findOneOrFail(UserTokenEntity, tid, { relations: ['user'] })
     const user = token.user!
     if (uid !== user!.id) throw server.httpErrors.badRequest()
-    if (user.level >= req.user.level && user.id !== req.user.id) throw server.httpErrors.forbidden
+    if (user.level >= req.user.level && user.id !== req.user.id) throw server.httpErrors.forbidden()
+
     await server.manager.remove(token)
-    return token.id
+
+    return true
   })
 }
 
