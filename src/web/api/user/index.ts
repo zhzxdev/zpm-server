@@ -1,6 +1,7 @@
 import { FastifyPluginAsync } from 'fastify'
 import { UserEntity } from '../../../db'
 import { tokenStorage } from '../token_storage'
+import user from './user'
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -22,6 +23,8 @@ const fn: FastifyPluginAsync = async (server) => {
   server.get('/', async (req) => {
     return req.user
   })
+
+  await server.register(user, { prefix: '/user' })
 }
 
 export default fn

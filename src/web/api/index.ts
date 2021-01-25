@@ -27,14 +27,16 @@ const fn: FastifyPluginAsync = async (server) => {
     {
       schema: {
         body: S.object() //
-          .prop('login', S.string().required())
-          .prop('pass', S.string().required())
+          .prop('login', S.string())
+          .required()
+          .prop('pass', S.string())
+          .required()
       }
     },
     async (req) => {
       const { login, pass } = <any>req.body
       const user = await server.manager.findOneOrFail(UserEntity, { login }, { select: ['id', 'hash', 'salt'] })
-      if (!(await verifyPassword(pass, user.hash, user.salt))) throw server.httpErrors.forbidden()
+      if (!(await verifyPassword(pass, user.hash!, user.salt!))) throw server.httpErrors.forbidden()
       const accessToken = (await randomBytesAsync(16)).toString('base64')
       tokenStorage.set(accessToken, user.id)
       return accessToken

@@ -8,10 +8,10 @@ export class UserEntity extends BasicEntity {
   login!: string
 
   @Column({ select: false })
-  hash!: string
+  hash?: string
 
   @Column({ select: false })
-  salt!: string
+  salt?: string
 
   // User level
   // 0 - common operator (student)
@@ -29,7 +29,7 @@ export class UserEntity extends BasicEntity {
 export class UserTokenEntity extends BasicEntity {
   @Column({ select: false })
   @Index({ unique: true })
-  token!: string
+  token?: string
 
   @ManyToOne(() => UserEntity, (e) => e.tokens, { onDelete: 'CASCADE' })
   user?: UserEntity
