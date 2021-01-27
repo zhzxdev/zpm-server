@@ -35,8 +35,11 @@ const fn: FastifyPluginAsync = async (server) => {
     },
     async (req) => {
       const { login, pass } = <any>req.body
-      const user = await server.manager.findOneOrFail(UserEntity, { login }, { select: ['id', 'hash', 'salt'] })
+
+      const user = await server.manager.findOneOrFail(UserEntity, { login }, { select: ['id', 'hash', 'salt', 'disabled'] })
+      if (user.disabled) throw server.httpErrors.forbidden('User is disabled')
       if (!(await verifyPassword(pass, user.hash!, user.salt!))) throw server.httpErrors.forbidden()
+
       const accessToken = (await randomBytesAsync(16)).toString('base64')
       tokenStorage.set(accessToken, user.id)
       return accessToken

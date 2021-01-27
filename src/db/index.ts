@@ -28,7 +28,7 @@ async function initDatabase() {
   const now = Date.now()
   await setKV('db_ver', '0.0.0')
   const [hash, salt] = await generatePasswordPair('123456')
-  await manager.insert(UserEntity, { name: 'admin', login: 'admin', hash, salt, level: 127, created: now })
+  await manager.insert(UserEntity, { name: 'admin', login: 'admin', disabled: false, hash, salt, level: 127, created: now })
   logger.info('Inserted default user admin:123456')
 }
 
