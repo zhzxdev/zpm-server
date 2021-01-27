@@ -7,11 +7,8 @@ export class UserEntity extends BasicEntity {
   @Index({ unique: true })
   login!: string
 
-  @Column({ select: false })
-  hash?: string
-
-  @Column({ select: false })
-  salt?: string
+  @Column()
+  disabled!: boolean
 
   // User level
   // 0 - common operator (student)
@@ -20,6 +17,12 @@ export class UserEntity extends BasicEntity {
   // 127 - developer
   @Column('tinyint')
   level!: number
+
+  @Column({ select: false })
+  hash?: string
+
+  @Column({ select: false })
+  salt?: string
 
   @OneToMany(() => UserTokenEntity, (e) => e.user)
   tokens?: UserTokenEntity[]

@@ -20,6 +20,8 @@ const fn: FastifyPluginAsync = async (server) => {
           .required()
           .prop('login', S.string())
           .required()
+          .prop('disabled', S.boolean())
+          .required()
           .prop('level', S.integer().minimum(0))
           .required()
           .prop('pass', S.string())
@@ -27,12 +29,13 @@ const fn: FastifyPluginAsync = async (server) => {
       }
     },
     async (req) => {
-      const { name, login, level, pass } = <any>req.body
+      const { name, login, disabled, level, pass } = <any>req.body
       if (level >= req.user.level) throw server.httpErrors.forbidden()
 
       const user = new UserEntity()
       user.name = name
       user.login = login
+      user.disabled = disabled
       user.level = level
       const [hash, salt] = await generatePasswordPair(pass)
       user.hash = hash
@@ -58,6 +61,7 @@ const fn: FastifyPluginAsync = async (server) => {
         body: S.object()
           .prop('name', S.string())
           .prop('login', S.string())
+          .prop('disabled', S.boolean())
           .prop('level', S.number().minimum(0))
           .prop('pass', S.string())
       }
@@ -67,7 +71,7 @@ const fn: FastifyPluginAsync = async (server) => {
       const user = await server.manager.findOneOrFail(UserEntity, id, { relations: ['tokens'] })
       if (user.level >= req.user.level && user.id !== req.user.id) throw server.httpErrors.forbidden()
 
-      mergeObj(user, <any>req.body, 'name', 'login', 'level')
+      mergeObj(user, <any>req.body, 'name', 'login', 'disabled', 'level')
       const { pass } = <any>req.body
       if (pass) {
         const [hash, salt] = await generatePasswordPair(pass)

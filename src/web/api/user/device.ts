@@ -35,6 +35,13 @@ const fn: FastifyPluginAsync = async (server) => {
     }
   )
 
+  server.get('/:id', async (req) => {
+    const { id } = <any>req.params
+    const device = await server.manager.findOneOrFail(DeviceEntity, id)
+
+    return device
+  })
+
   server.put(
     '/:id',
     {
