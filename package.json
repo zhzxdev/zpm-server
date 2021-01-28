@@ -38,6 +38,10 @@
     "sqlite3": "^5.0.1",
     "typeorm": "^0.2.30"
   },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.3",
+    "utf-8-validate": "^5.0.4"
+  },
   "scripts": {
     "lint": "yarn eslint . && yarn prettier --check .",
     "lint:fix": "yarn eslint . --fix && yarn prettier --write .",

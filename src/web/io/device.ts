@@ -17,7 +17,7 @@ const currentConns = new Map<string, IDeviceConnection>()
 const socketMetas = new WeakMap<Socket, ISocketMeta>()
 
 const fn: FastifyPluginAsync = async (server) => {
-  const nsp = server.io.of('device')
+  const nsp = server.io.of('/device')
   nsp.use(async (socket, next) => {
     try {
       const { id } = await server.manager.findOneOrFail(DeviceEntity, { ip: socket.handshake.address })

@@ -1,22 +1,10 @@
 import { FastifyPluginAsync } from 'fastify'
-import { logOnResponse } from '../../../misc/misc'
 import { UserEntity } from '../../../db'
+import { logOnResponse } from '../../../misc/misc'
 import { tokenStorage } from '../token_storage'
-import user from './user'
-import device from './device'
-import log from './log'
-import operations from './operations'
-
-declare module 'fastify' {
-  interface FastifyRequest {
-    user: UserEntity
-  }
-}
 
 const fn: FastifyPluginAsync = async (server) => {
-  server.decorateRequest('user', undefined)
-
-  server.addHook('onResponse', logOnResponse('user', '/api/user'))
+  server.addHook('onResponse', logOnResponse('device', '/api/device/user'))
 
   server.addHook('preValidation', async (req) => {
     const token = req.headers['x-access-token']
@@ -28,15 +16,6 @@ const fn: FastifyPluginAsync = async (server) => {
     req.user = await server.manager.findOneOrFail(UserEntity, { id })
     if (req.user.disabled) throw server.httpErrors.forbidden('User is disabled')
   })
-
-  server.get('/', async (req) => {
-    return req.user
-  })
-
-  await server.register(user, { prefix: '/user' })
-  await server.register(device, { prefix: '/device' })
-  await server.register(log, { prefix: '/log' })
-  await server.register(operations, { prefix: '/operations' })
 }
 
 export default fn

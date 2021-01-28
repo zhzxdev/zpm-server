@@ -13,7 +13,7 @@ const fn: FastifyPluginAsync = async (server) => {
 
   server.setErrorHandler(async (error) => {
     if (error.name === 'EntityNotFound') {
-      return server.httpErrors.badRequest()
+      return server.httpErrors.notFound()
     }
     throw error
   })

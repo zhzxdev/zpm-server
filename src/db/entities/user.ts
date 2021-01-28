@@ -1,6 +1,6 @@
 import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm'
 import { BasicEntity } from './base'
-import { OperationEntity } from './operation'
+import { LogEntity } from './log'
 
 @Entity()
 export class UserEntity extends BasicEntity {
@@ -28,8 +28,8 @@ export class UserEntity extends BasicEntity {
   @OneToMany(() => UserTokenEntity, (e) => e.user)
   tokens?: UserTokenEntity[]
 
-  @OneToMany(() => OperationEntity, (e) => e.user)
-  operations?: OperationEntity[]
+  @OneToMany(() => LogEntity, (e) => e.user)
+  logs?: LogEntity[]
 }
 
 @Entity()
