@@ -1,4 +1,4 @@
-import { Column, Entity, getManager, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, getManager, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { UserEntity } from './user'
 
 @Entity()
@@ -16,6 +16,7 @@ export class LogEntity {
   result!: string
 
   @Column()
+  @Index()
   ts!: number
 
   @ManyToOne(() => UserEntity, (e) => e.logs, { onDelete: 'SET NULL' })
