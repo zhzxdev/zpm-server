@@ -1,6 +1,7 @@
 import { FastifyPluginAsync } from 'fastify'
 import { UserEntity } from '../../../db'
 import { logOnResponse } from '../../../misc/misc'
+import { invoke } from '../../io/device'
 import { tokenStorage } from '../token_storage'
 
 const fn: FastifyPluginAsync = async (server) => {
@@ -15,6 +16,10 @@ const fn: FastifyPluginAsync = async (server) => {
 
     req.user = await server.manager.findOneOrFail(UserEntity, { id })
     if (req.user.disabled) throw server.httpErrors.forbidden('User is disabled')
+  })
+
+  server.post('/killps', async (req) => {
+    return await invoke('killps', req.device.id)
   })
 }
 
