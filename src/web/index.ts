@@ -1,8 +1,9 @@
 import fastify from 'fastify'
 import fastifySensible from 'fastify-sensible'
+import fastifyStatic from 'fastify-static'
 import { Server } from 'socket.io'
 import { EntityManager, getManager } from 'typeorm'
-import { APP_VERSION } from '../misc/constants'
+import { APP_VERSION, STATIC_DIR } from '../misc/constants'
 import { ENV_IS_DEVELOPMENT } from '../misc/env'
 import io from './io'
 import api from './api'
@@ -36,6 +37,10 @@ export async function startWebService(): Promise<void> {
       exposeRoute: true
     })
   }
+
+  await server.register(fastifyStatic, {
+    root: STATIC_DIR
+  })
 
   // Inject manager
   const manager = getManager()

@@ -109,3 +109,5 @@ dist
 # Runtime data
 /data/**/*
 !/data/.gitkeep
+/static/**/*
+!/static/.gitkeep
