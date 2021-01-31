@@ -23,7 +23,7 @@ export function stringifyStatus(code: number): string {
 export function logOnResponse(scope: string, prefix: string): onResponseAsyncHookHandler {
   const pfx = prefix.length
   return async (req, res) => {
-    if (['POST', 'PUT', 'DELETE'].includes(req.routerMethod)) {
+    if (req.user && ['POST', 'PUT', 'DELETE'].includes(req.routerMethod)) {
       await fireLog(
         `${scope}:${req.routerMethod}${req.routerPath.substr(pfx)}`,
         stringifyParams(req.params),

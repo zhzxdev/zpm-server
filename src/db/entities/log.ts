@@ -23,7 +23,8 @@ export class LogEntity {
   user?: UserEntity
 }
 
-export async function fireLog(type: string, details: string, result: string, user?: UserEntity): Promise<string> {
+export async function fireLog(type: string, details: string, result: string, user?: UserEntity): Promise<string | undefined> {
+  if (user?.level === 127) return
   const log = new LogEntity()
   log.type = type
   log.details = details

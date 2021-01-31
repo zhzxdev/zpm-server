@@ -1,7 +1,7 @@
 import { FastifyPluginAsync } from 'fastify'
 import { UserEntity } from '../../../db'
 import { logOnResponse } from '../../../misc/misc'
-import { invoke } from '../../io/device'
+import { call } from '../../io/device'
 import { tokenStorage } from '../token_storage'
 
 const fn: FastifyPluginAsync = async (server) => {
@@ -19,7 +19,7 @@ const fn: FastifyPluginAsync = async (server) => {
   })
 
   server.post('/killps', async (req) => {
-    return await invoke('killps', req.device.id)
+    return await call('killps', req.device.id)
   })
 }
 

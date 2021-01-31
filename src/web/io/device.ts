@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from 'fastify'
 import { Socket } from 'socket.io'
-import { DeviceEntity } from '../../db'
+import { DeviceEntity, fireLog } from '../../db'
 import { logger } from '../../misc/logger'
 import { RPCEndpoint } from '../../misc/rpc'
 
@@ -37,6 +37,8 @@ const fn: FastifyPluginAsync = async (server) => {
     if (currentConns.has(id)) {
       const conn = currentConns.get(id)!
       conn.socket.disconnect(true)
+    } else {
+      void fireLog('io:device:connect', `id=${id}`, '')
     }
     currentConns.set(id, { socket, rpc })
     logger.info(`[Device IO] Device ${id} connected`)
@@ -45,6 +47,7 @@ const fn: FastifyPluginAsync = async (server) => {
       logger.info(`[Device IO] Device ${id} disconnected`)
       if (currentConns.get(id)?.socket.id === socket.id) {
         currentConns.delete(id)
+        void fireLog('io:device:disconnect', `id=${id}`, '')
       }
     })
   })
@@ -57,4 +60,21 @@ export async function invoke(type: string, deviceId: string, ...args: any): Prom
   const conn = currentConns.get(deviceId)
   if (!conn) throw new Error('Device offline')
   return conn.rpc.invoke(type, ...args)
+}
+
+interface IRPCCallResult {
+  result: any
+  ok: boolean
+  ts: number
+}
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export async function call(type: string, deviceId: string, ...args: any): Promise<IRPCCallResult> {
+  const ts = Date.now()
+  try {
+    const result = await invoke(type, deviceId, ...args)
+    return { result, ok: true, ts }
+  } catch (e) {
+    return { result: e.message, ok: false, ts }
+  }
 }

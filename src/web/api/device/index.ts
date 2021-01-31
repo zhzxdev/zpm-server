@@ -1,5 +1,6 @@
+import S from 'fluent-json-schema'
 import { FastifyPluginAsync } from 'fastify'
-import { DeviceEntity, UserTokenEntity } from '../../../db'
+import { DeviceEntity, fireLog, UserTokenEntity } from '../../../db'
 import { APP_VERSION } from '../../../misc/constants'
 import user from './user'
 
@@ -30,6 +31,26 @@ const fn: FastifyPluginAsync = async (server) => {
     const { user } = await server.manager.findOneOrFail(UserTokenEntity, { token }, { relations: ['user'] })
     return user
   })
+
+  server.post(
+    '/log',
+    {
+      schema: {
+        body: S.object()
+          .prop('type', S.string())
+          .required()
+          .prop('details', S.string())
+          .required()
+          .prop('result', S.string())
+          .required()
+      }
+    },
+    async (req) => {
+      const { type, details, result } = <any>req.body
+      await fireLog('desktop:' + type, details, result)
+      return true
+    }
+  )
 
   await server.register(user, { prefix: '/user' })
 }

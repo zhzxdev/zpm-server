@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from 'fastify'
 import S from 'fluent-json-schema'
-import { UserEntity } from '../../db'
+import { fireLog, UserEntity } from '../../db'
 import { APP_VERSION } from '../../misc/constants'
 import { randomBytesAsync, verifyPassword } from '../../misc/crypto'
 import device from './device'
@@ -37,9 +37,15 @@ const fn: FastifyPluginAsync = async (server) => {
       const { login, pass } = <any>req.body
 
       const user = await server.manager.findOneOrFail(UserEntity, { login }, { select: ['id', 'hash', 'salt', 'disabled'] })
-      if (user.disabled) throw server.httpErrors.forbidden('User is disabled')
-      if (!(await verifyPassword(pass, user.hash!, user.salt!))) throw server.httpErrors.forbidden()
-
+      if (user.disabled) {
+        await fireLog('login', '', 'failed: user is disabled', user)
+        throw server.httpErrors.forbidden('User is disabled')
+      }
+      if (!(await verifyPassword(pass, user.hash!, user.salt!))) {
+        await fireLog('login', '', 'failed: incorrect password', user)
+        throw server.httpErrors.forbidden()
+      }
+      await fireLog('login', '', 'success', user)
       const accessToken = (await randomBytesAsync(16)).toString('base64')
       tokenStorage.set(accessToken, user.id)
       return accessToken
