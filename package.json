@@ -1,6 +1,6 @@
 {
   "name": "zpm-server",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "ZHZX Printer Management Server",
   "repository": "git@github.com:zhzxdev/zpm-server.git",
   "author": "ZhangZisu <i@zzs1.cn>",
