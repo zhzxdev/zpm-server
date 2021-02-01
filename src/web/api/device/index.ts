@@ -14,7 +14,7 @@ const fn: FastifyPluginAsync = async (server) => {
   server.decorateRequest('device', undefined)
 
   server.addHook('preValidation', async (req) => {
-    req.device = await server.manager.findOneOrFail(DeviceEntity, { ip: req.socket.remoteAddress })
+    req.device = await server.manager.findOneOrFail(DeviceEntity, { ip: req.ip })
   })
 
   server.get('/ping', async (req) => {

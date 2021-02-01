@@ -20,7 +20,8 @@ const fn: FastifyPluginAsync = async (server) => {
   const nsp = server.io.of('/device')
   nsp.use(async (socket, next) => {
     try {
-      const { id } = await server.manager.findOneOrFail(DeviceEntity, { ip: socket.handshake.address })
+      const ip = (<any>socket.handshake.headers)['x-real-ip'] || socket.handshake.address
+      const { id } = await server.manager.findOneOrFail(DeviceEntity, { ip })
       socketMetas.set(socket, { deviceId: id })
       return next()
     } catch (e) {

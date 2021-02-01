@@ -20,7 +20,8 @@ declare module 'fastify' {
 
 export async function startWebService(): Promise<void> {
   const server = fastify({
-    logger
+    logger,
+    trustProxy: true
   })
 
   // Swagger
