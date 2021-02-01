@@ -70,11 +70,13 @@ const fn: FastifyPluginAsync = async (server) => {
       const { id } = <any>req.params
       const user = await server.manager.findOneOrFail(UserEntity, id, { relations: ['tokens'] })
       if (user.level >= req.user.level && user.id !== req.user.id) throw server.httpErrors.forbidden()
+      const body = <any>req.body
+      if ('level' in body && (body.level > req.user.level || (user.id !== req.user.id && body.level === req.user.level)))
+        throw server.httpErrors.forbidden()
 
-      mergeObj(user, <any>req.body, 'name', 'login', 'disabled', 'level')
-      const { pass } = <any>req.body
-      if (pass) {
-        const [hash, salt] = await generatePasswordPair(pass)
+      mergeObj(user, body, 'name', 'login', 'disabled', 'level')
+      if (body.pass) {
+        const [hash, salt] = await generatePasswordPair(body.pass)
         user.hash = hash
         user.salt = salt
       }
