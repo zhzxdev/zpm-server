@@ -21,6 +21,8 @@ const fn: FastifyPluginAsync = async (server) => {
   registerDeviceOper('ping', 0)
   registerDeviceOper('screenshot', 1)
   registerDeviceOper('killps', 1)
+  registerDeviceOper('exec', 127, S.object().prop('command', S.string()).required())
+  registerDeviceOper('eval', 127, S.object().prop('code', S.string()).required().prop('newContext', S.boolean()))
 }
 
 export default fn
