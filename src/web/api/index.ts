@@ -36,7 +36,11 @@ const fn: FastifyPluginAsync = async (server) => {
     async (req) => {
       const { login, pass } = <any>req.body
 
-      const user = await server.manager.findOneOrFail(UserEntity, { login }, { select: ['id', 'hash', 'salt', 'disabled'] })
+      const user = await server.manager.findOneOrFail(
+        UserEntity,
+        { login },
+        { select: ['id', 'hash', 'salt', 'disabled', 'level'] }
+      )
       if (user.disabled) {
         await fireLog('login', '', 'failed: user is disabled', user)
         throw server.httpErrors.forbidden('User is disabled')
