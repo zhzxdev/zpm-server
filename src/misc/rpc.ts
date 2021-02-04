@@ -89,10 +89,10 @@ export class RPCEndpoint extends EventEmitter {
     }
     clearTimeout(cb.timeout)
     this.asyncCbs.delete(msg.asyncId)
-    if ('resolve' in msg) {
-      cb.resolve(msg.resolve)
-    } else {
+    if ('reject' in msg) {
       cb.reject(new Error(msg.reject))
+    } else {
+      cb.resolve(msg.resolve)
     }
   }
 
