@@ -79,3 +79,7 @@ export async function call(type: string, deviceId: string, ...args: any): Promis
     return { result: e.message, ok: false, ts }
   }
 }
+
+export function isOnline(deviceId: string): boolean {
+  return currentConns.has(deviceId)
+}

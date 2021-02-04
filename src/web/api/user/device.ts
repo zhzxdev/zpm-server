@@ -2,6 +2,7 @@ import S from 'fluent-json-schema'
 import { FastifyPluginAsync } from 'fastify'
 import { DeviceEntity } from '../../../db'
 import { mergeObj } from '../../../misc/misc'
+import { isOnline } from '../../io/device'
 
 const fn: FastifyPluginAsync = async (server) => {
   server.addHook('preValidation', async (req) => {
@@ -40,6 +41,11 @@ const fn: FastifyPluginAsync = async (server) => {
     const device = await server.manager.findOneOrFail(DeviceEntity, id)
 
     return device
+  })
+
+  server.get('/:id/online', async (req) => {
+    const { id } = <any>req.params
+    return isOnline(id)
   })
 
   server.put(
